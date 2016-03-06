@@ -6,16 +6,17 @@
 #include "food.h"
 #include "snake.h"
 
-GameController::GameController (QGraphicsScene &scene, QObject *parent) 
+GameController::GameController (QGraphicsScene &scene, QObject *parent)
     : QObject       (parent)
     , gameIsRunning (true)
     , scene         (scene)
     , snake         (new Snake (*this))
 {
+    // Will emit the timeout() signal repeatly every 1000 / 40 per millisecond.
     timer.start (1000 / 40);
 
-    Food *a1 = new Food (0, -50);
-    scene.addItem (a1);
+    Food *food = new Food (0, -50);
+    scene.addItem (food);
 
     scene.addItem (snake);
     scene.installEventFilter (this);
@@ -26,12 +27,30 @@ GameController::GameController (QGraphicsScene &scene, QObject *parent)
 GameController::~GameController ()
 {}
 
+//void GameController::snakeAteFood (Snake *snake, Food *food)
+//{
+//    scene.removeItem (food);
+//    //delete food;
+
+//    addNewFood ();
+//}
+
 void GameController::snakeAteFood (Snake *snake, Food *food)
 {
-    scene.removeItem (food);
-    //delete food;
+        int x, y;
 
-    addNewFood ();
+        do {
+            x = (int)(qrand () % 100) / 10;
+            y = (int)(qrand () % 100) / 10;
+
+            x *= 10;
+            y *= 10;
+        }
+        while (snake->shape ().contains (snake->mapFromScene (
+                                                 QPointF (x + 5, y + 5))));
+
+        //food = new Food (x, y);
+        food->setPos (x, y);
 }
 
 //void GameController::snakeHitWall (Snake *snake, Wall *wall)
@@ -94,7 +113,8 @@ void GameController::addNewFood ()
         x *= 10;
         y *= 10;
     }
-    while (snake->shape ().contains (snake->mapFromScene (QPointF (x + 5, y + 5))));
+    while (snake->shape ().contains (snake->mapFromScene (
+                                             QPointF (x + 5, y + 5))));
 
     Food *food = new Food (x, y);
     scene.addItem (food);

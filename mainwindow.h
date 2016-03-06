@@ -23,7 +23,7 @@ private:
     void initSceneBackground();
 
     QGraphicsScene *scene;
-    QGraphicsView *view;
+    QGraphicsView  *view;
 
     GameController *game;
 };

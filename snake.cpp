@@ -4,7 +4,7 @@
 #include "gamecontroller.h"
 #include "snake.h"
 
-static const qreal SNAKE_SIZE = 10;
+static constexpr qreal SNAKE_SIZE = 10;
 
 Snake::Snake (GameController &controller) 
     : head              (0, 0)

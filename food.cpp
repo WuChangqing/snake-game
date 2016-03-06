@@ -3,11 +3,12 @@
 #include "constants.h"
 #include "food.h"
 
-static const qreal FOOD_RADIUS = 3;
+static constexpr qreal FOOD_RADIUS = 3;
 
 Food::Food(qreal x, qreal y)
 {
     setPos(x, y);
+    // Add extra info for this item.
     setData(GD_Type, GO_Food);
 }
 
@@ -30,6 +31,7 @@ void Food::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 QPainterPath Food::shape() const
 {
     QPainterPath p;
-    p.addEllipse(QPointF(TILE_SIZE / 2, TILE_SIZE / 2), FOOD_RADIUS, FOOD_RADIUS);
-    return p;
+    p.addEllipse(QPointF(TILE_SIZE / 2, TILE_SIZE / 2), FOOD_RADIUS,
+                 FOOD_RADIUS);
+    return std::move(p);
 }
