@@ -32,7 +32,7 @@ protected:
 
 private:
     void handleKeyPressed (QKeyEvent *event);
-    void addNewFood ();
+    void addNewFood (Food *food);
 
     bool            gameIsRunning;
     QTimer          timer;

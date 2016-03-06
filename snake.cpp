@@ -1,5 +1,5 @@
 #include <QPainter>
-
+#include "food.h"
 #include "constants.h"
 #include "gamecontroller.h"
 #include "snake.h"
@@ -153,8 +153,8 @@ void Snake::handleCollisions ()
     foreach (QGraphicsItem *collidingItem, collisions)
     {
         if (collidingItem->data (GD_Type) == GO_Food) {
-            // Let GameController handle the event by putting another apple
-            controller.snakeAteFood (this, (Food *)collidingItem);
+            // Let GameController handle the event by putting another food.
+            controller.snakeAteFood (this, static_cast<Food*>(collidingItem));
             ++growing;
         }
     }

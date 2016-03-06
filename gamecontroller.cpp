@@ -1,10 +1,10 @@
-#include <QEvent>
-#include <QGraphicsScene>
-#include <QKeyEvent>
-
 #include "gamecontroller.h"
 #include "food.h"
 #include "snake.h"
+#include <QEvent>
+#include <QGraphicsScene>
+#include <QKeyEvent>
+#include <memory>
 
 GameController::GameController (QGraphicsScene &scene, QObject *parent)
     : QObject       (parent)
@@ -15,8 +15,7 @@ GameController::GameController (QGraphicsScene &scene, QObject *parent)
     // Will emit the timeout() signal repeatly every 1000 / 40 per millisecond.
     timer.start (1000 / 40);
 
-    Food *food = new Food (0, -50);
-    scene.addItem (food);
+    scene.addItem (new Food (0, -50));
 
     scene.addItem (snake);
     scene.installEventFilter (this);
@@ -27,30 +26,9 @@ GameController::GameController (QGraphicsScene &scene, QObject *parent)
 GameController::~GameController ()
 {}
 
-//void GameController::snakeAteFood (Snake *snake, Food *food)
-//{
-//    scene.removeItem (food);
-//    //delete food;
-
-//    addNewFood ();
-//}
-
 void GameController::snakeAteFood (Snake *snake, Food *food)
 {
-        int x, y;
-
-        do {
-            x = (int)(qrand () % 100) / 10;
-            y = (int)(qrand () % 100) / 10;
-
-            x *= 10;
-            y *= 10;
-        }
-        while (snake->shape ().contains (snake->mapFromScene (
-                                                 QPointF (x + 5, y + 5))));
-
-        //food = new Food (x, y);
-        food->setPos (x, y);
+        addNewFood (food);
 }
 
 //void GameController::snakeHitWall (Snake *snake, Wall *wall)
@@ -102,7 +80,7 @@ void GameController::handleKeyPressed (QKeyEvent *event)
     }
 }
 
-void GameController::addNewFood ()
+void GameController::addNewFood (Food* food)
 {
     int x, y;
 
@@ -115,9 +93,12 @@ void GameController::addNewFood ()
     }
     while (snake->shape ().contains (snake->mapFromScene (
                                              QPointF (x + 5, y + 5))));
+    if (food == nullptr){
+            scene.addItem (new Food (x, y));
+    }else{
+            food->setPos (x, y);
+    }
 
-    Food *food = new Food (x, y);
-    scene.addItem (food);
 }
 
 void GameController::gameOver ()
@@ -126,7 +107,7 @@ void GameController::gameOver ()
 
     snake = new Snake (*this);
     scene.addItem (snake);
-    addNewFood ();
+    addNewFood (nullptr);
 }
 
 bool GameController::eventFilter (QObject *object, QEvent *event)
